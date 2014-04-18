@@ -18,6 +18,8 @@
 		10959F6018ADB7EA001585FA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10959F3F18ADB7EA001585FA /* Cocoa.framework */; };
 		10959F6818ADB7EA001585FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 10959F6618ADB7EA001585FA /* InfoPlist.strings */; };
 		10959F6A18ADB7EA001585FA /* MonocleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 10959F6918ADB7EA001585FA /* MonocleTests.m */; };
+		109A4AAA18FE277B00ABD28F /* MCLScreenRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 109A4AA918FE277B00ABD28F /* MCLScreenRecorder.m */; };
+		109A4AAC18FE27C200ABD28F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109A4AAB18FE27C200ABD28F /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,11 @@
 		10959F6518ADB7EA001585FA /* MonocleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MonocleTests-Info.plist"; sourceTree = "<group>"; };
 		10959F6718ADB7EA001585FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		10959F6918ADB7EA001585FA /* MonocleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonocleTests.m; sourceTree = "<group>"; };
+		109A4AA418FCDDE000ABD28F /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		109A4AA618FCDDEE00ABD28F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		109A4AA818FE277B00ABD28F /* MCLScreenRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCLScreenRecorder.h; sourceTree = "<group>"; };
+		109A4AA918FE277B00ABD28F /* MCLScreenRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCLScreenRecorder.m; sourceTree = "<group>"; };
+		109A4AAB18FE27C200ABD28F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				109A4AAC18FE27C200ABD28F /* AVFoundation.framework in Frameworks */,
 				10959F4018ADB7EA001585FA /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +103,9 @@
 		10959F3E18ADB7EA001585FA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				109A4AAB18FE27C200ABD28F /* AVFoundation.framework */,
+				109A4AA618FCDDEE00ABD28F /* OpenGL.framework */,
+				109A4AA418FCDDE000ABD28F /* Quartz.framework */,
 				10959F3F18ADB7EA001585FA /* Cocoa.framework */,
 				10959F5E18ADB7EA001585FA /* XCTest.framework */,
 				10959F4118ADB7EA001585FA /* Other Frameworks */,
@@ -120,6 +131,8 @@
 				10959F5418ADB7EA001585FA /* MainMenu.xib */,
 				10959F5718ADB7EA001585FA /* Images.xcassets */,
 				10959F4618ADB7EA001585FA /* Supporting Files */,
+				109A4AA818FE277B00ABD28F /* MCLScreenRecorder.h */,
+				109A4AA918FE277B00ABD28F /* MCLScreenRecorder.m */,
 			);
 			path = Monocle;
 			sourceTree = "<group>";
@@ -255,6 +268,7 @@
 			files = (
 				10959F4C18ADB7EA001585FA /* main.m in Sources */,
 				10959F5318ADB7EA001585FA /* MCLAppDelegate.m in Sources */,
+				109A4AAA18FE277B00ABD28F /* MCLScreenRecorder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +479,7 @@
 				10959F6F18ADB7EA001585FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		10959F7018ADB7EA001585FA /* Build configuration list for PBXNativeTarget "MonocleTests" */ = {
 			isa = XCConfigurationList;
@@ -473,6 +488,7 @@
 				10959F7218ADB7EA001585FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
