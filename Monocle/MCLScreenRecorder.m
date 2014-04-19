@@ -74,20 +74,28 @@
 - (void)saveGifFromImageFrames
 {
     NSLog(@"Start Generating GIF image");
-    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)([NSURL fileURLWithPath:@"/Users/vanstee/Desktop/screen.gif"]), kUTTypeGIF, [images count], NULL);
 
-    NSDictionary *frameProperties = @{(NSString *)kCGImagePropertyGIFDictionary: @{(NSString *)kCGImagePropertyGIFDelayTime: [self averateFrameRate]}};
+    dispatch_async(imageWritingQueue, ^{
+        CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)([NSURL fileURLWithPath:@"/Users/vanstee/Desktop/screen.gif"]), kUTTypeGIF, [images count], NULL);
 
-    for (NSValue *encodedImage in images) {
-        CGImageRef image;
-        [encodedImage getValue:&image];
-        CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)(frameProperties));
-    }
+        NSDictionary *frameProperties = @{(NSString *)kCGImagePropertyGIFDictionary: @{(NSString *)kCGImagePropertyGIFDelayTime: [self averateFrameRate]}};
 
-    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)(@{}));
-    CGImageDestinationFinalize(destination);
-    CFRelease(destination);
-    NSLog(@"Finish Generating GIF image");
+        for (NSValue *encodedImage in images) {
+            CGImageRef image;
+            [encodedImage getValue:&image];
+            CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)(frameProperties));
+            CGImageRelease(image);
+        }
+
+        images = nil;
+
+        CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)(@{}));
+        CGImageDestinationFinalize(destination);
+
+        CFRelease(destination);
+
+        NSLog(@"Finish Generating GIF image");
+    });
 }
 
 - (NSNumber *)averateFrameRate
@@ -121,17 +129,24 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    CGImageRef image = [self imageFromSampleBuffer:sampleBuffer];
-    NSValue *encodedImage = [NSValue valueWithBytes:&image objCType:@encode(CGImageRef)];
+    CFRetain(sampleBuffer);
 
-    @synchronized(images) {
-        [images addObject:encodedImage];
-    }
+    dispatch_async(imageWritingQueue, ^{
+        CGImageRef image = [self imageFromSampleBuffer:sampleBuffer];
+        CFRelease(sampleBuffer);
 
-    @synchronized(timestamps) {
-        Float64 timestamp = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer));
-        [timestamps addObject:@(timestamp)];
-    }
+        NSValue *encodedImage = [NSValue valueWithBytes:&image objCType:@encode(CGImageRef)];
+        CGImageRelease(image);
+
+        @synchronized(images) {
+            [images addObject:encodedImage];
+        }
+
+        @synchronized(timestamps) {
+            Float64 timestamp = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer));
+            [timestamps addObject:@(timestamp)];
+        }
+    });
 }
 
 @end
