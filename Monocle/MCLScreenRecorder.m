@@ -76,18 +76,7 @@
     NSLog(@"Start Generating GIF image");
     CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)([NSURL fileURLWithPath:@"/Users/vanstee/Desktop/screen.gif"]), kUTTypeGIF, [images count], NULL);
 
-    NSDictionary *frameProperties = @{
-                                      (NSString *)kCGImagePropertyGIFDictionary: @{
-                                              (NSString *)kCGImagePropertyGIFDelayTime: [self averateFrameRate]
-                                              }
-                                      };
-
-    NSDictionary *gifProperties = @{
-                                    (NSString *)kCGImagePropertyGIFDictionary: @{
-                                            (NSString *)kCGImagePropertyColorModel: (NSString *)kCGImagePropertyColorModelRGB,
-                                            (NSString *)kCGImagePropertyGIFHasGlobalColorMap: [NSNumber numberWithBool:YES]
-                                            }
-                                    };
+    NSDictionary *frameProperties = @{(NSString *)kCGImagePropertyGIFDictionary: @{(NSString *)kCGImagePropertyGIFDelayTime: [self averateFrameRate]}};
 
     for (NSValue *encodedImage in images) {
         CGImageRef image;
@@ -95,7 +84,7 @@
         CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)(frameProperties));
     }
 
-    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)(gifProperties));
+    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)(@{}));
     CGImageDestinationFinalize(destination);
     CFRelease(destination);
     NSLog(@"Finish Generating GIF image");
