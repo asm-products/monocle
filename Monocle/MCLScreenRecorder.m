@@ -1,13 +1,17 @@
 #import "MCLScreenRecorder.h"
 
 @implementation MCLScreenRecorder
-{
-    CGDirectDisplayID displayID;
-    AVCaptureMovieFileOutput *captureMovieFileOutput;
-}
 
 - (id)init
 {
+    images = [NSMutableArray new];
+    imageProperties = @{
+                        NSImageInterlaced: [NSNumber numberWithBool:NO],
+                        NSImageCompressionFactor: [NSNumber numberWithFloat:1]
+                        };
+                        
+    imageWritingQueue = dispatch_queue_create("imageWritingQueue", DISPATCH_QUEUE_SERIAL);
+
     self.captureSession = [AVCaptureSession new];
 
     if (![self.captureSession canSetSessionPreset:AVCaptureSessionPresetHigh]) {
@@ -27,75 +31,118 @@
 
     [self.captureSession addInput:self.captureScreenInput];
 
-    captureMovieFileOutput = [AVCaptureMovieFileOutput new];
-    [captureMovieFileOutput setDelegate:self];
+    captureVideoDataOutput = [AVCaptureVideoDataOutput new];
+    dispatch_queue_t videoDataOutputQueue = dispatch_queue_create("videoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
+    [captureVideoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
 
-    if (![self.captureSession canAddOutput:captureMovieFileOutput]) {
-        NSLog(@"Could not add output 'AVCaptureMovieFileOutput'");
+    captureVideoDataOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)};
+
+    if (![self.captureSession canAddOutput:captureVideoDataOutput]) {
+        NSLog(@"Could not add output 'AVCaptureVideoDataOutput'");
         return nil;
     }
 
-    [self.captureSession addOutput:captureMovieFileOutput];
-
-    [self.captureSession startRunning];
+    [self.captureSession addOutput:captureVideoDataOutput];
 
     return self;
+}
+
+- (CGImageRef)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
+{
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+
+    return CGImageRetain(quartzImage);
+}
+
+- (void)saveGifFromImageFrames
+{
+    NSLog(@"Start Generating GIF image");
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)([NSURL fileURLWithPath:@"/Users/vanstee/Desktop/screen.gif"]), kUTTypeGIF, [images count], NULL);
+
+    NSDictionary *frameProperties = @{
+                                      (NSString *)kCGImagePropertyGIFDictionary: @{
+                                              (NSString *)kCGImagePropertyGIFDelayTime: [self averateFrameRate]
+                                              }
+                                      };
+
+    NSDictionary *gifProperties = @{
+                                    (NSString *)kCGImagePropertyGIFDictionary: @{
+                                            (NSString *)kCGImagePropertyColorModel: (NSString *)kCGImagePropertyColorModelRGB,
+                                            (NSString *)kCGImagePropertyGIFHasGlobalColorMap: [NSNumber numberWithBool:YES]
+                                            }
+                                    };
+
+    for (NSValue *encodedImage in images) {
+        CGImageRef image;
+        [encodedImage getValue:&image];
+        CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)(frameProperties));
+    }
+
+    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)(gifProperties));
+    CGImageDestinationFinalize(destination);
+    CFRelease(destination);
+    NSLog(@"Finish Generating GIF image");
+}
+
+- (NSNumber *)averateFrameRate
+{
+    NSNumber *start = timestamps[0];
+    NSNumber *average = [timestamps valueForKey:@"@avg"];
+    return @([average floatValue] - [start floatValue]);
 }
 
 - (IBAction)startRecording:(id)sender
 {
     NSLog(@"Starting recording");
-
-    char *recordingPathBytes = tempnam([[@"~/Desktop/" stringByStandardizingPath] fileSystemRepresentation], "Monocle");
-	NSString *recordingPath = [[NSString alloc] initWithBytesNoCopy:recordingPathBytes length:strlen(recordingPathBytes) encoding:NSUTF8StringEncoding freeWhenDone:YES];
-    recordingPath = [recordingPath stringByAppendingPathExtension:@"mov"];
-    NSURL *recordingURL = [NSURL fileURLWithPath:recordingPath];
-    [captureMovieFileOutput startRecordingToOutputFileURL:recordingURL recordingDelegate:self];
+    [self.captureSession startRunning];
 }
 
 - (IBAction)stopRecording:(id)sender
 {
     NSLog(@"Stopping recording");
     [self.captureSession stopRunning];
+
+    NSLog(@"Recorded %lu images", [images count]);
+    [self saveGifFromImageFrames];
 }
 
-#pragma mark AVCaptureFileOutputDelegate
+#pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
 
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    return;
+    NSLog(@"Dropped frame!");
 }
 
-- (BOOL)captureOutputShouldProvideSampleAccurateRecordingStart:(AVCaptureOutput *)captureOutput
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    return NO;
-}
+    CGImageRef image = [self imageFromSampleBuffer:sampleBuffer];
+    NSValue *encodedImage = [NSValue valueWithBytes:&image objCType:@encode(CGImageRef)];
 
-#pragma mark AVCaptureFileOutputRecordingDelegate
+    @synchronized(images) {
+        [images addObject:encodedImage];
+    }
 
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
-{
-    NSLog(@"Finished recording");
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didPauseRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
-{
-    NSLog(@"Paused recording");
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didResumeRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
-{
-    NSLog(@"Resumed recording");
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
-{
-    NSLog(@"Started recording");
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput willFinishRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections error:(NSError *)error
-{
-    NSLog(@"About to finish recording");
+    @synchronized(timestamps) {
+        Float64 timestamp = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer));
+        [timestamps addObject:@(timestamp)];
+    }
 }
 
 @end

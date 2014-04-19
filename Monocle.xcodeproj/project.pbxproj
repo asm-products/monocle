@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1083A5B6190229FB00FD5D76 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1083A5B5190229FB00FD5D76 /* CoreVideo.framework */; };
+		1083A5B819022A1800FD5D76 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1083A5B719022A1800FD5D76 /* CoreMedia.framework */; };
 		10959F4018ADB7EA001585FA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10959F3F18ADB7EA001585FA /* Cocoa.framework */; };
 		10959F4A18ADB7EA001585FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 10959F4818ADB7EA001585FA /* InfoPlist.strings */; };
 		10959F4C18ADB7EA001585FA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 10959F4B18ADB7EA001585FA /* main.m */; };
@@ -33,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1083A5B5190229FB00FD5D76 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		1083A5B719022A1800FD5D76 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		10959F3C18ADB7EA001585FA /* Monocle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monocle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10959F3F18ADB7EA001585FA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		10959F4218ADB7EA001585FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -66,6 +70,8 @@
 			files = (
 				109A4AAC18FE27C200ABD28F /* AVFoundation.framework in Frameworks */,
 				10959F4018ADB7EA001585FA /* Cocoa.framework in Frameworks */,
+				1083A5B819022A1800FD5D76 /* CoreMedia.framework in Frameworks */,
+				1083A5B6190229FB00FD5D76 /* CoreVideo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +109,8 @@
 		10959F3E18ADB7EA001585FA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1083A5B719022A1800FD5D76 /* CoreMedia.framework */,
+				1083A5B5190229FB00FD5D76 /* CoreVideo.framework */,
 				109A4AAB18FE27C200ABD28F /* AVFoundation.framework */,
 				109A4AA618FCDDEE00ABD28F /* OpenGL.framework */,
 				109A4AA418FCDDE000ABD28F /* Quartz.framework */,
