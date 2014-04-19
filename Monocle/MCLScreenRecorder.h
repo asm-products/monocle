@@ -1,19 +1,12 @@
 #import <AVFoundation/AVFoundation.h>
 
-@interface MCLScreenRecorder : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
-{
-    AVCaptureVideoDataOutput *captureVideoDataOutput;
-    CGDirectDisplayID displayID;
-    dispatch_queue_t imageWritingQueue;
-    NSMutableArray *images;
-    NSDictionary *imageProperties;
-    NSMutableArray *timestamps;
-}
+#import "MCLCaptureAnimatedGifOutput.h"
+
+@interface MCLScreenRecorder : NSObject
 
 @property (strong) AVCaptureSession *captureSession;
-@property (strong) AVCaptureScreenInput *captureScreenInput;
-
-- (CGImageRef)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+@property (strong) AVCaptureScreenInput *captureInput;
+@property (strong) MCLCaptureAnimatedGifOutput *captureOutput;
 
 - (IBAction)startRecording:(id)sender;
 - (IBAction)stopRecording:(id)sender;

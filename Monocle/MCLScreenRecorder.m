@@ -1,108 +1,58 @@
 #import "MCLScreenRecorder.h"
+#import "MCLCaptureAnimatedGifOutput.h"
 
 @implementation MCLScreenRecorder
 
 - (id)init
 {
-    images = [NSMutableArray new];
-    imageProperties = @{
-                        NSImageInterlaced: [NSNumber numberWithBool:NO],
-                        NSImageCompressionFactor: [NSNumber numberWithFloat:1]
-                        };
-                        
-    imageWritingQueue = dispatch_queue_create("imageWritingQueue", DISPATCH_QUEUE_SERIAL);
+    self.captureSession = [self createCaptureSession];
+    self.captureInput = [self createCaptureInput];
+    self.captureOutput = [self createCaptureOutput];
 
-    self.captureSession = [AVCaptureSession new];
-
-    if (![self.captureSession canSetSessionPreset:AVCaptureSessionPresetHigh]) {
-        NSLog(@"Could not set session preset to 'AVCaptureSessionPresetHigh'");
+    if (![self.captureSession canAddInput:self.captureInput]) {
+        NSLog(@"Could not add AVCaptureInput to AVCaptureSession");
         return nil;
     }
 
-    [self.captureSession setSessionPreset:AVCaptureSessionPresetHigh];
+    [self.captureSession addInput:self.captureInput];
 
-    displayID = CGMainDisplayID();
-    self.captureScreenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:displayID];
-
-    if (![self.captureSession canAddInput:self.captureScreenInput]) {
-        NSLog(@"Could not add input 'AVCaptureScreenInput'");
+    if (![self.captureSession canAddOutput:self.captureOutput]) {
+        NSLog(@"Could not add AVCaptureOutput to AVCaptureSession");
         return nil;
     }
 
-    [self.captureSession addInput:self.captureScreenInput];
-
-    captureVideoDataOutput = [AVCaptureVideoDataOutput new];
-    dispatch_queue_t videoDataOutputQueue = dispatch_queue_create("videoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
-    [captureVideoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
-
-    captureVideoDataOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)};
-
-    if (![self.captureSession canAddOutput:captureVideoDataOutput]) {
-        NSLog(@"Could not add output 'AVCaptureVideoDataOutput'");
-        return nil;
-    }
-
-    [self.captureSession addOutput:captureVideoDataOutput];
+    [self.captureSession addOutput:self.captureOutput];
 
     return self;
 }
 
-- (CGImageRef)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer
+- (AVCaptureSession *)createCaptureSession
 {
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    AVCaptureSession *captureSession = [AVCaptureSession new];
 
-    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    if (![captureSession canSetSessionPreset:AVCaptureSessionPresetHigh]) {
+        NSLog(@"Could not set session preset to 'AVCaptureSessionPresetHigh'");
+        return nil;
+    }
 
-    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    [captureSession setSessionPreset:AVCaptureSessionPresetHigh];
 
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
-
-    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
-
-    CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
-
-    return CGImageRetain(quartzImage);
+    return captureSession;
 }
 
-- (void)saveGifFromImageFrames
+- (AVCaptureScreenInput *)createCaptureInput
 {
-    NSLog(@"Start Generating GIF image");
+    AVCaptureScreenInput *captureInput = [[AVCaptureScreenInput alloc] initWithDisplayID:CGMainDisplayID()];
 
-    dispatch_async(imageWritingQueue, ^{
-        CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)([NSURL fileURLWithPath:@"/Users/vanstee/Desktop/screen.gif"]), kUTTypeGIF, [images count], NULL);
-
-        NSDictionary *frameProperties = @{(NSString *)kCGImagePropertyGIFDictionary: @{(NSString *)kCGImagePropertyGIFDelayTime: [self averateFrameRate]}};
-
-        for (NSValue *encodedImage in images) {
-            CGImageRef image;
-            [encodedImage getValue:&image];
-            CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)(frameProperties));
-            CGImageRelease(image);
-        }
-
-        images = nil;
-
-        CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)(@{}));
-        CGImageDestinationFinalize(destination);
-
-        CFRelease(destination);
-
-        NSLog(@"Finish Generating GIF image");
-    });
+    return captureInput;
 }
 
-- (NSNumber *)averateFrameRate
+- (MCLCaptureAnimatedGifOutput *)createCaptureOutput
 {
-    NSNumber *start = timestamps[0];
-    NSNumber *average = [timestamps valueForKey:@"@avg"];
-    return @([average floatValue] - [start floatValue]);
+    NSURL *destinationURL = [NSURL fileURLWithPath:@"/Users/vanstee/Desktop/screen.gif"];
+    MCLCaptureAnimatedGifOutput *captureOutput = [[MCLCaptureAnimatedGifOutput alloc] initWithDestinationURL:destinationURL];
+
+    return captureOutput;
 }
 
 - (IBAction)startRecording:(id)sender
@@ -115,10 +65,9 @@
 {
     NSLog(@"Stopping recording");
     [self.captureSession stopRunning];
-
-    NSLog(@"Recorded %lu images", [images count]);
-    [self saveGifFromImageFrames];
+    [self.captureOutput compileFramesIntoImageDestinationAsync];
 }
+
 
 #pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
 
@@ -129,24 +78,7 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    CFRetain(sampleBuffer);
-
-    dispatch_async(imageWritingQueue, ^{
-        CGImageRef image = [self imageFromSampleBuffer:sampleBuffer];
-        CFRelease(sampleBuffer);
-
-        NSValue *encodedImage = [NSValue valueWithBytes:&image objCType:@encode(CGImageRef)];
-        CGImageRelease(image);
-
-        @synchronized(images) {
-            [images addObject:encodedImage];
-        }
-
-        @synchronized(timestamps) {
-            Float64 timestamp = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer));
-            [timestamps addObject:@(timestamp)];
-        }
-    });
+    [self.captureOutput addSampleBufferAsNextFrame:sampleBuffer];
 }
 
 @end

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1083A5B6190229FB00FD5D76 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1083A5B5190229FB00FD5D76 /* CoreVideo.framework */; };
 		1083A5B819022A1800FD5D76 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1083A5B719022A1800FD5D76 /* CoreMedia.framework */; };
+		1083A5BB1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 1083A5BA1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m */; };
 		10959F4018ADB7EA001585FA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10959F3F18ADB7EA001585FA /* Cocoa.framework */; };
 		10959F4A18ADB7EA001585FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 10959F4818ADB7EA001585FA /* InfoPlist.strings */; };
 		10959F4C18ADB7EA001585FA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 10959F4B18ADB7EA001585FA /* main.m */; };
@@ -37,6 +38,8 @@
 /* Begin PBXFileReference section */
 		1083A5B5190229FB00FD5D76 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1083A5B719022A1800FD5D76 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		1083A5B91902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCLCaptureAnimatedGifOutput.h; sourceTree = "<group>"; };
+		1083A5BA1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCLCaptureAnimatedGifOutput.m; sourceTree = "<group>"; };
 		10959F3C18ADB7EA001585FA /* Monocle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monocle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10959F3F18ADB7EA001585FA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		10959F4218ADB7EA001585FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -141,6 +144,8 @@
 				10959F4618ADB7EA001585FA /* Supporting Files */,
 				109A4AA818FE277B00ABD28F /* MCLScreenRecorder.h */,
 				109A4AA918FE277B00ABD28F /* MCLScreenRecorder.m */,
+				1083A5B91902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.h */,
+				1083A5BA1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m */,
 			);
 			path = Monocle;
 			sourceTree = "<group>";
@@ -276,6 +281,7 @@
 			files = (
 				10959F4C18ADB7EA001585FA /* main.m in Sources */,
 				10959F5318ADB7EA001585FA /* MCLAppDelegate.m in Sources */,
+				1083A5BB1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m in Sources */,
 				109A4AAA18FE277B00ABD28F /* MCLScreenRecorder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
