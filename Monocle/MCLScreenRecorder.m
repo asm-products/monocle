@@ -55,13 +55,13 @@
     return captureOutput;
 }
 
-- (IBAction)startRecording:(id)sender
+- (void)startRecording
 {
     NSLog(@"Starting recording");
     [self.captureSession startRunning];
 }
 
-- (IBAction)stopRecording:(id)sender
+- (void)stopRecording
 {
     NSLog(@"Stopping recording");
     [self.captureSession stopRunning];

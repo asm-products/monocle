@@ -8,7 +8,7 @@
 @property (strong) AVCaptureScreenInput *captureInput;
 @property (strong) MCLCaptureAnimatedGifOutput *captureOutput;
 
-- (IBAction)startRecording:(id)sender;
-- (IBAction)stopRecording:(id)sender;
+- (void)startRecording;
+- (void)stopRecording;
 
 @end
