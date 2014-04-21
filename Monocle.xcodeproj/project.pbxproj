@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10447A111904A1C4006732BE /* MCLRecordingWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10447A0F1904A1C4006732BE /* MCLRecordingWindowController.m */; };
+		10447A121904A1C4006732BE /* MCLRecordingWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10447A101904A1C4006732BE /* MCLRecordingWindowController.xib */; };
+		10447A151904B12A006732BE /* MCLTransparentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10447A141904B12A006732BE /* MCLTransparentView.m */; };
+		10447A181904C03D006732BE /* MCLRecordingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 10447A171904C03D006732BE /* MCLRecordingWindow.m */; };
 		1083A5B6190229FB00FD5D76 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1083A5B5190229FB00FD5D76 /* CoreVideo.framework */; };
 		1083A5B819022A1800FD5D76 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1083A5B719022A1800FD5D76 /* CoreMedia.framework */; };
 		1083A5BB1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 1083A5BA1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m */; };
@@ -39,6 +43,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		10447A0E1904A1C4006732BE /* MCLRecordingWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCLRecordingWindowController.h; sourceTree = "<group>"; };
+		10447A0F1904A1C4006732BE /* MCLRecordingWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCLRecordingWindowController.m; sourceTree = "<group>"; };
+		10447A101904A1C4006732BE /* MCLRecordingWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MCLRecordingWindowController.xib; sourceTree = "<group>"; };
+		10447A131904B12A006732BE /* MCLTransparentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCLTransparentView.h; sourceTree = "<group>"; };
+		10447A141904B12A006732BE /* MCLTransparentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCLTransparentView.m; sourceTree = "<group>"; };
+		10447A161904C03D006732BE /* MCLRecordingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCLRecordingWindow.h; sourceTree = "<group>"; };
+		10447A171904C03D006732BE /* MCLRecordingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCLRecordingWindow.m; sourceTree = "<group>"; };
 		1083A5B5190229FB00FD5D76 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1083A5B719022A1800FD5D76 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		1083A5B91902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCLCaptureAnimatedGifOutput.h; sourceTree = "<group>"; };
@@ -162,6 +173,13 @@
 				10B5C7F419036A56000C3F47 /* MCLScreenAreaSelector.m */,
 				10B5C7F6190373E1000C3F47 /* MCLScreenAreaSelectorView.h */,
 				10B5C7F7190373E1000C3F47 /* MCLScreenAreaSelectorView.m */,
+				10447A0E1904A1C4006732BE /* MCLRecordingWindowController.h */,
+				10447A0F1904A1C4006732BE /* MCLRecordingWindowController.m */,
+				10447A101904A1C4006732BE /* MCLRecordingWindowController.xib */,
+				10447A131904B12A006732BE /* MCLTransparentView.h */,
+				10447A141904B12A006732BE /* MCLTransparentView.m */,
+				10447A161904C03D006732BE /* MCLRecordingWindow.h */,
+				10447A171904C03D006732BE /* MCLRecordingWindow.m */,
 			);
 			path = Monocle;
 			sourceTree = "<group>";
@@ -277,6 +295,7 @@
 			files = (
 				10959F4A18ADB7EA001585FA /* InfoPlist.strings in Resources */,
 				10959F5818ADB7EA001585FA /* Images.xcassets in Resources */,
+				10447A121904A1C4006732BE /* MCLRecordingWindowController.xib in Resources */,
 				10959F5018ADB7EA001585FA /* Credits.rtf in Resources */,
 				10959F5618ADB7EA001585FA /* MainMenu.xib in Resources */,
 			);
@@ -330,9 +349,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10447A151904B12A006732BE /* MCLTransparentView.m in Sources */,
+				10447A111904A1C4006732BE /* MCLRecordingWindowController.m in Sources */,
 				10959F4C18ADB7EA001585FA /* main.m in Sources */,
 				10B5C7F8190373E1000C3F47 /* MCLScreenAreaSelectorView.m in Sources */,
 				10B5C7F519036A56000C3F47 /* MCLScreenAreaSelector.m in Sources */,
+				10447A181904C03D006732BE /* MCLRecordingWindow.m in Sources */,
 				10959F5318ADB7EA001585FA /* MCLAppDelegate.m in Sources */,
 				1083A5BB1902F00000FD5D76 /* MCLCaptureAnimatedGifOutput.m in Sources */,
 				109A4AAA18FE277B00ABD28F /* MCLScreenRecorder.m in Sources */,

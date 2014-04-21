@@ -8,18 +8,22 @@
 
 - (void)mouseDown:(NSEvent *)event
 {
+    NSLog(@"Mouse down");
 	mouseDownPoint = [event locationInWindow];
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
+    NSLog(@"Mouse up");
 	NSPoint mouseUpPoint = [event locationInWindow];
     selectionRect = [self calculateRectWithStartPoint:mouseDownPoint andEndPoint:mouseUpPoint];
-    // do something with selectionRect
+    self.screenAreaSelector.selectionRect = selectionRect;
+    [self.screenAreaSelector stopSelectingScreenArea];
 }
 
 - (void)mouseDragged:(NSEvent *)event
 {
+    NSLog(@"Mouse dragged");
 	NSPoint currentPoint = [event locationInWindow];
 	NSRect previousSelectionRect = selectionRect;
     selectionRect = [self calculateRectWithStartPoint:mouseDownPoint andEndPoint:currentPoint];

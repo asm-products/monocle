@@ -23,16 +23,6 @@ NSString *const MCLStartSelectingScreenAreaKey = @"MCLStartSelectingScreenArea";
     }];
 }
 
-- (IBAction)startRecording:(id)sender
-{
-    [self.screenRecorder startRecording];
-}
-
-- (IBAction)stopRecording:(id)sender
-{
-    [self.screenRecorder stopRecording];
-}
-
 - (IBAction)startSelectingScreenArea:(id)sender
 {
     [self.screenAreaSelector startSelectingScreenArea];
@@ -41,6 +31,16 @@ NSString *const MCLStartSelectingScreenAreaKey = @"MCLStartSelectingScreenArea";
 - (IBAction)stopSelectingScreenArea:(id)sender
 {
     [self.screenAreaSelector stopSelectingScreenArea];
+}
+
+- (IBAction)startRecording:(id)sender
+{
+    [self.screenRecorder startRecording];
+}
+
+- (IBAction)stopRecording:(id)sender
+{
+    [self.screenRecorder stopRecording];
 }
 
 @end
